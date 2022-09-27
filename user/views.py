@@ -16,13 +16,17 @@ def sign_up_view(request):
         if password != password2:
             return render(request, 'user/signup.html')
         else:
-            new_user = UserModel()
-            new_user.username = username
-            new_user.password = password
-            new_user.bio = bio
-            new_user.save()
+            exist_user = UserModel.objects/filter(username=username)
 
-        return redirect('/sign-in')
+            if exist_user:
+                return render(request, 'user/signup.html')
+            else:
+                new_user = UserModel()
+                new_user.username = username
+                new_user.password = password
+                new_user.bio = bio
+                new_user.save()
+                return redirect('/sign-in')
 
 
 def sign_in_view(request):
