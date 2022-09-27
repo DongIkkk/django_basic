@@ -16,7 +16,7 @@ def sign_up_view(request):
         if password != password2:
             return render(request, 'user/signup.html')
         else:
-            exist_user = UserModel.objects/filter(username=username)
+            exist_user = UserModel.objects.filter(username=username)
 
             if exist_user:
                 return render(request, 'user/signup.html')
@@ -38,7 +38,7 @@ def sign_in_view(request):
         me = UserModel.objects.get(username=username)
         if me.password == password:
             request.session['user'] = me.username
-            return HttpResponse('로그인 성공!')
+            return HttpResponse(me.username)
         else:
             return redirect('/sign-in')
     elif request.method == 'GET':
