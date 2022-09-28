@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from .models import TweetModel
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -14,7 +16,23 @@ def tweet(request):
         user = request.user.is_authenticated
 
         if user:
-            return render(request, 'tweet/home.html')
+            all_tweet = TweetModel.objects.all().order_by('-created_at')
+
+            return render(request, 'tweet/home.html', {'tweet': all_tweet}) # tweet이라는 키값에 트윗정보 담아서보냈음
         else:
             return redirect('/sign-in')
 
+    elif request.method == 'POST':
+        user = request.user
+        my_tweet = TweetModel()
+        my_tweet.author = user
+        my_tweet.content = request.POST.get('my-content', '')
+        my_tweet.save()
+        return redirect('/tweet')
+
+
+@login_required
+def delete_tweet(request, id):
+    my_tweet = TweetModel.objects.get(id=id)
+    my_tweet.delete()
+    return redirect('/tweet')
